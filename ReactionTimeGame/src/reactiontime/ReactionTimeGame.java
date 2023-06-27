@@ -208,11 +208,7 @@ public class ReactionTimeGame extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-    	
-        ReactionTimeGame game = new ReactionTimeGame();
-        game.setVisible(true);
-    }
+    
 }
 
 
