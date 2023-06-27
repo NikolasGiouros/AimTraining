@@ -4,23 +4,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import java.io.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.sound.sampled.*;
 import java.io.File;
-
-
+import java.awt.Graphics;
+import javax.swing.JPanel;
 
 public class ReactionTimeGame extends JFrame {
-	private static final long serialVersionUID = 1L;
-	private Timer timer;
+	
+    private Timer timer;
     private int dotCount;
     private long startTime;
     private final int GAME_DURATION = 30; // Duration of the game in seconds
     private DotPanel dotPanel;
+    private JButton startButton;
+    private JPanel timerPanel;
+    private JLabel timerLabel;
     
     
     public ReactionTimeGame() {
@@ -31,6 +31,26 @@ public class ReactionTimeGame extends JFrame {
 
         dotPanel = new DotPanel();
         add(dotPanel, BorderLayout.CENTER);
+        
+        
+        
+        // Start button
+        startButton = new JButton("Start");
+        startButton.setPreferredSize(new Dimension(10,50));
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startGame();
+            }
+        });
+        add(startButton, BorderLayout.NORTH);
+        
+        // Timer panel
+        timerPanel = new JPanel();
+        timerLabel = new JLabel("Time: " + GAME_DURATION + "s");
+        timerPanel.setPreferredSize(new Dimension(10,40));
+        timerPanel.add(timerLabel);
+        add(timerPanel, BorderLayout.SOUTH);
 
         timer = new Timer(1000, new ActionListener() {
             @Override
@@ -41,27 +61,28 @@ public class ReactionTimeGame extends JFrame {
         
         
         
+        
     }
+   
 
     public void startGame() {
         dotCount = 0;
         startTime = System.currentTimeMillis();
         dotPanel.showNextDot();
         timer.start();
+        startButton.setEnabled(false); // Disable the start button once the game has started
     }
 
     private class DotPanel extends JPanel {
-        
-		private static final long serialVersionUID = 1L;
-		private Random random;
+        private Random random;
         private int dotSize;
         private Dot currentDot;
-
+        private BufferedImage backgroundImage;
         public DotPanel() {
-        	
             random = new Random();
-            dotSize = 30; // Adjust the size of the dot as per your preference
-            setBackground(new Color(0,128,128));
+            dotSize = 25; // Adjust the size of the dot as per your preference
+            
+            
             setPreferredSize(new Dimension(1000, 1000));
             setLayout(null);
 
@@ -71,9 +92,15 @@ public class ReactionTimeGame extends JFrame {
                     hitDot(e);
                 }
             });
-        
+            
+            try {
+                File imageFile = new File("C:\\Users\\nikol\\Desktop\\blackandwhite.jpg");
+                backgroundImage = ImageIO.read(imageFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
+        
         public int getDotSize() {
             return dotSize;
         }
@@ -101,19 +128,25 @@ public class ReactionTimeGame extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            g.setColor(Color.RED);
+            
+            // Draw the background image
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            
+            // Draw the dot image
             if (currentDot != null && currentDot.isVisible()) {
-                g.fillOval(currentDot.getX(), currentDot.getY(), dotSize, dotSize);
+                g.drawImage(currentDot.getImage(), currentDot.getX(), currentDot.getY(), dotSize, dotSize, this);
             }
         }
+
+        
+        
     }
 
     private void hitDot(MouseEvent e) {
         if (dotPanel.currentDot != null && dotPanel.currentDot.isHit(e.getX(), e.getY())) {
             dotPanel.showNextDot();
+            
         }
-        
-        
     }
 
     private void updateTimer() {
@@ -122,7 +155,7 @@ public class ReactionTimeGame extends JFrame {
         long remainingTime = GAME_DURATION - elapsedTime;
 
         if (remainingTime >= 0) {
-            setTitle("Reaction Time Game - Time: " + remainingTime + "s");
+            timerLabel.setText("Time: " + remainingTime + "s");
         } else {
             timer.stop();
             dotPanel.setVisible(false);
@@ -135,13 +168,24 @@ public class ReactionTimeGame extends JFrame {
         private int x;
         private int y;
         private boolean visible;
-
+        private Image image;
+        
         public Dot(int x, int y) {
             this.x = x;
             this.y = y;
             this.visible = false;
+            
+            try {
+                File imageFile = new File("C:\\Users\\nikol\\Desktop\\targetimage.png"); // Replace with the actual path to your image file
+                image = ImageIO.read(imageFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
+        public Image getImage() {
+            return image;
+        }
+        
         public int getX() {
             return x;
         }
@@ -160,12 +204,16 @@ public class ReactionTimeGame extends JFrame {
 
         public boolean isHit(int clickX, int clickY) {
             int dotSize = dotPanel.getDotSize();
-            return clickX >= x && clickX <= x + dotSize &&
-                    clickY >= y && clickY <= y + dotSize;
+            return clickX >= x && clickX <= x + dotSize && clickY >= y && clickY <= y + dotSize;
         }
     }
 
-    
+    public static void main(String[] args) {
+    	
+        ReactionTimeGame game = new ReactionTimeGame();
+        game.setVisible(true);
+    }
 }
+
 
 
