@@ -6,7 +6,6 @@ public class Main {
 		
 	        ReactionTimeGame game = new ReactionTimeGame();
 	        game.setVisible(true);
-	        game.startGame();
 	    }
 
 	
