@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author nikol
- *
- */
-module tictactoe {
-}
