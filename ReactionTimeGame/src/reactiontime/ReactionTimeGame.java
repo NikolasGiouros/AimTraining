@@ -10,6 +10,15 @@ import java.io.IOException;
 import java.io.File;
 import java.awt.Graphics;
 import javax.swing.JPanel;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
+
+//Creating the class for the game
 
 public class ReactionTimeGame extends JFrame {
 	
@@ -21,6 +30,7 @@ public class ReactionTimeGame extends JFrame {
     private JButton startButton;
     private JPanel timerPanel;
     private JLabel timerLabel;
+    private Clip hitSound;
     
     
     public ReactionTimeGame() {
@@ -60,6 +70,14 @@ public class ReactionTimeGame extends JFrame {
         });
         
         
+        try {
+            File soundFile = new File("C:\\Users\\nikol\\Desktop\\boomsound.au");  
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundFile);
+            hitSound = AudioSystem.getClip();
+            hitSound.open(audioInputStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
         
         
     }
@@ -80,7 +98,7 @@ public class ReactionTimeGame extends JFrame {
         private BufferedImage backgroundImage;
         public DotPanel() {
             random = new Random();
-            dotSize = 25; // Adjust the size of the dot as per your preference
+            dotSize = 32; // Adjust the size of the dot as per your preference
             
             
             setPreferredSize(new Dimension(1000, 1000));
@@ -145,7 +163,7 @@ public class ReactionTimeGame extends JFrame {
     private void hitDot(MouseEvent e) {
         if (dotPanel.currentDot != null && dotPanel.currentDot.isHit(e.getX(), e.getY())) {
             dotPanel.showNextDot();
-            
+            playHitSound();
         }
     }
 
@@ -163,6 +181,15 @@ public class ReactionTimeGame extends JFrame {
             dispose();
         }
     }
+    
+    private void playHitSound() {
+        if (hitSound != null) {
+            hitSound.setFramePosition(0);  // Rewind the sound to the beginning
+            hitSound.start();  // Play the sound
+        }
+    }
+
+    
 
     private class Dot {
         private int x;
@@ -208,11 +235,7 @@ public class ReactionTimeGame extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-    	
-        ReactionTimeGame game = new ReactionTimeGame();
-        game.setVisible(true);
-    }
+   
 }
 
 
