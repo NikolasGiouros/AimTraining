@@ -291,7 +291,6 @@ public class ReactionTimeGame extends JFrame {
             return clickX >= x && clickX <= x + dotSize && clickY >= y && clickY <= y + dotSize;
         }
     }
-
 }
 
 
