@@ -242,7 +242,7 @@ public class ReactionTimeGame extends JFrame {
     private void playHitSound() {
         if (hitSound != null) {
             hitSound.setFramePosition(0);  // Rewind the sound to the beginning
-            hitSound.start();  // Play the sound.
+            hitSound.start();  // Play the sound
         }
     }
 
