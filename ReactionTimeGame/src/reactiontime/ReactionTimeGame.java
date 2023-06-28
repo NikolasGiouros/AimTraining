@@ -15,12 +15,12 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
 
 //Creating the class for the game
 
 public class ReactionTimeGame extends JFrame {
+	
+	//Variable initialization.
 	
     private Timer timer;
     private int dotCount;
@@ -32,19 +32,23 @@ public class ReactionTimeGame extends JFrame {
     private JLabel timerLabel;
     private Clip hitSound;
     
-    
+    //Constructor.
     public ReactionTimeGame() {
-        setTitle("Reaction Time Game");
+    	
+    	//Setting the title and the size of the opening frame.
+
+    	setTitle("Reaction Time Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 1000);
         setLayout(new BorderLayout());
-
+        
+        //Creating an object for the dotPanel,which is the image background.
+        
         dotPanel = new DotPanel();
         add(dotPanel, BorderLayout.CENTER);
         
+        // Start button for the game.
         
-        
-        // Start button
         startButton = new JButton("Start");
         startButton.setPreferredSize(new Dimension(10,50));
         startButton.addActionListener(new ActionListener() {
@@ -55,9 +59,10 @@ public class ReactionTimeGame extends JFrame {
         });
         add(startButton, BorderLayout.NORTH);
         
-        // Timer panel
+        // Timer panel above the dotPanel.
+        
         timerPanel = new JPanel();
-        timerLabel = new JLabel("Time: " + GAME_DURATION + "s");
+        timerLabel = new JLabel("Time Remaining: " + GAME_DURATION + "s");
         timerPanel.setPreferredSize(new Dimension(10,40));
         timerPanel.add(timerLabel);
         add(timerPanel, BorderLayout.SOUTH);
@@ -69,6 +74,7 @@ public class ReactionTimeGame extends JFrame {
             }
         });
         
+        //Implementing a sound ,which will be used each time the target is hit.
         
         try {
             File soundFile = new File("C:\\Users\\nikol\\Desktop\\boomsound.au");  
@@ -82,34 +88,72 @@ public class ReactionTimeGame extends JFrame {
         
     }
    
+    //This method is called one time when the game starts.
 
     public void startGame() {
-        dotCount = 0;
-        startTime = System.currentTimeMillis();
-        dotPanel.showNextDot();
-        timer.start();
-        startButton.setEnabled(false); // Disable the start button once the game has started
+        //Starts counting the valid hits.
+    	
+    	dotCount = 0;
+        
+    	//Stores the time which the game started,and calculates the time passed based on GAME_DURATION.
+    	
+    	startTime = System.currentTimeMillis();
+        
+    	//Shows the first dot.
+    	
+    	dotPanel.showNextDot();
+        
+    	//Starts the timer.
+    	
+    	timer.start();
+        
+    	//Disables the start button since it has already been pressed.
+    	
+    	startButton.setEnabled(false); // Disable the start button once the game has started
     }
-
+    
+    
+    //Custom panel for the game.
+    
     private class DotPanel extends JPanel {
-        private Random random;
-        private int dotSize;
-        private Dot currentDot;
-        private BufferedImage backgroundImage;
-        public DotPanel() {
+        
+    	//Instance of the random class,used for generating random numbers.
+    	
+    	private Random random;
+        
+    	//Integer for the dotSize.
+    	
+    	private int dotSize;
+        
+    	//Instance for the dot we currently are being displayed while playing.
+    	
+    	private Dot currentDot;
+        
+    	//A buffered image variable that holds the background image.
+    	
+    	private BufferedImage backgroundImage;
+        
+    	
+    	//Method for each time a new dot appears.
+    	
+    	public DotPanel() {
+    		
+    		//Random coordinations for the new dot appear.
+    		
             random = new Random();
-            dotSize = 32; // Adjust the size of the dot as per your preference
+            dotSize = 32; 
             
             
-            setPreferredSize(new Dimension(1000, 1000));
-            setLayout(null);
+            //Adding MouseListener so each click PRESS is recognized.
 
             addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent e) {
+                public void mousePressed(MouseEvent e) {
                     hitDot(e);
                 }
             });
+            
+            //Setting up the background image with the grey and white boxes.
             
             try {
                 File imageFile = new File("C:\\Users\\nikol\\Desktop\\blackandwhite.jpg");
@@ -117,12 +161,19 @@ public class ReactionTimeGame extends JFrame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            
+            
+            
         }
         
+    	//Getter method for the dotSize;
+    	
         public int getDotSize() {
             return dotSize;
         }
 
+        //Method that shows the next dot,after the current one is hit.
+        
         public void showNextDot() {
             int panelWidth = getWidth();
             int panelHeight = getHeight();
@@ -142,7 +193,9 @@ public class ReactionTimeGame extends JFrame {
 
             repaint();
         }
-
+        
+        //Paint method
+        
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -159,7 +212,9 @@ public class ReactionTimeGame extends JFrame {
         
         
     }
-
+    
+    //Each time a dot is hit,it will show the next one and the sound will be played.
+    
     private void hitDot(MouseEvent e) {
         if (dotPanel.currentDot != null && dotPanel.currentDot.isHit(e.getX(), e.getY())) {
             dotPanel.showNextDot();
@@ -167,18 +222,20 @@ public class ReactionTimeGame extends JFrame {
         }
     }
 
+    //Updating the timer
+    
     private void updateTimer() {
         long currentTime = System.currentTimeMillis();
         long elapsedTime = (currentTime - startTime) / 1000;
         long remainingTime = GAME_DURATION - elapsedTime;
 
         if (remainingTime >= 0) {
-            timerLabel.setText("Time: " + remainingTime + "s");
+            timerLabel.setText("Time Remaining: " + remainingTime + "s");
         } else {
             timer.stop();
-            dotPanel.setVisible(false);
             JOptionPane.showMessageDialog(this, "Game Over!\nDots hit: " + dotCount);
-            dispose();
+            dotPanel.removeMouseListener(dotPanel.getMouseListeners()[0]);
+            startButton.setEnabled(true); // Enable the start button
         }
     }
     
@@ -235,7 +292,6 @@ public class ReactionTimeGame extends JFrame {
         }
     }
 
-   
 }
 
 
