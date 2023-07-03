@@ -28,7 +28,7 @@ public class ReactionTimeGame extends JFrame {
     private int dotCount;
     private long startTime;
     
-    // Duration of the game in seconds
+    // Duration of the game in seconds.
     
     private final int GAME_DURATION = 30; 
     private DotPanel dotPanel;
