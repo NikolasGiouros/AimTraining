@@ -116,14 +116,16 @@ public class ReactionTimeGame extends JFrame {
     	
     	timer.start();
         
-    	//Disables the start button since it has already been pressed.
+    	// Disable the start button once the game has started.
     	
-    	startButton.setEnabled(false); // Disable the start button once the game has started.
+    	startButton.setEnabled(false); 
     	
     	//Set the game status to true
+    	
     	gameStarted=true;
     	
     	//Call the mouse listener to enable it.
+    	
     	MouseListener();
     }
     
@@ -218,9 +220,11 @@ public class ReactionTimeGame extends JFrame {
             super.paintComponent(g);
             
             // Draw the background image
+            
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
             
             // Draw the dot image
+            
             if (currentDot != null && currentDot.isVisible()) {
                 g.drawImage(currentDot.getImage(), currentDot.getX(), currentDot.getY(), dotSize, dotSize, this);
             }
@@ -238,8 +242,7 @@ public class ReactionTimeGame extends JFrame {
             playHitSound();
         }
         if (dotCount>highScore) {
-        	highScore=dotCount;
-        	
+        	highScore=dotCount;        	
         }
     }
 
@@ -261,12 +264,15 @@ public class ReactionTimeGame extends JFrame {
             dotPanel.removeMouseListener(dotPanel.getMouseListeners()[0]);
             
             //Variable for the mouseListener.
+            
             gameStarted=false;
             
             //Call MouseListener
-            MouseListener();
             
+            MouseListener();
+               
             // Enable the start button
+         
             startButton.setEnabled(true); 
             
             
@@ -326,17 +332,21 @@ public class ReactionTimeGame extends JFrame {
         }
         
         //Method to check if the click on the X and Y coordinates,match the coordinates of the dot that appeared.
+        
         public boolean isHit(int clickX, int clickY) {
         	
         	//Get the size of the dot.
-            int dotSize = dotPanel.getDotSize();
+            
+        	int dotSize = dotPanel.getDotSize();
             
             //Return true,if the clicks on X and Y are within the coordination limits.Then the hit counts.Otherwise it does not count.
-            return clickX >= x && clickX <= x + dotSize && clickY >= y && clickY <= y + dotSize;
+            
+        	return clickX >= x && clickX <= x + dotSize && clickY >= y && clickY <= y + dotSize;
         }
     }
     
     //Checks whether the game started or not,so it enables or disabled the mouse on the dotPanel.
+    
     private void MouseListener() {
         if (gameStarted) {
             dotPanel.addMouseListener(new MouseAdapter() {
