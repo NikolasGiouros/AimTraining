@@ -1,7 +1,7 @@
 # AimTraining
 # Reaction Time Game
 
-The Reaction Time Game is a simple game where you test your reflexes by clicking on moving targets as quickly as possible. The objective is to hit as many targets as you can within the given time limit.
+The Reaction Time Game is a simple game where you test and improve your reflexes by clicking on a moving target as quickly as possible. The objective is to hit as many targets as you can within the given time limit.
 
 ## Game Instructions
 
@@ -20,6 +20,7 @@ The Reaction Time Game is a simple game where you test your reflexes by clicking
 - Timer shows the remaining time during the game.
 - Sound effect plays upon hitting a target.
 - Score counter keeps track of successful hits.
+- High score feature so you can push yourself towards improvement.
 
 ## Technologies Used
 
