@@ -156,7 +156,7 @@ public class ReactionTimeGame extends JFrame {
             //Setting up the background image with the grey and white boxes.
             
             try {
-                File imageFile = new File("C:\\Users\\nikol\\Desktop\\blackandwhite.jpg");
+                File imageFile = new File("C:\\Users\\nikol\\Desktop\\blacksquares.jpg");
                 backgroundImage = ImageIO.read(imageFile);
             } catch (IOException e) {
                 e.printStackTrace();
