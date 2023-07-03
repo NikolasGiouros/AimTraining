@@ -22,15 +22,22 @@ public class ReactionTimeGame extends JFrame {
 	
 	//Variable initialization.
 	
-    private Timer timer;
+    
+	private static final long serialVersionUID = 1L;
+	private Timer timer;
     private int dotCount;
     private long startTime;
-    private final int GAME_DURATION = 30; // Duration of the game in seconds
+    
+    // Duration of the game in seconds
+    
+    private final int GAME_DURATION = 30; 
     private DotPanel dotPanel;
     private JButton startButton;
     private JPanel timerPanel;
     private JLabel timerLabel;
     private Clip hitSound;
+    private int highScore=0;
+    private boolean gameStarted;
     
     //Constructor.
     public ReactionTimeGame() {
@@ -59,10 +66,10 @@ public class ReactionTimeGame extends JFrame {
         });
         add(startButton, BorderLayout.NORTH);
         
-        // Timer panel above the dotPanel.
+        // Timer panel and highScore.
         
         timerPanel = new JPanel();
-        timerLabel = new JLabel("Time Remaining: " + GAME_DURATION + "s");
+        timerLabel = new JLabel("Time Remaining: " + GAME_DURATION + "s"+ "                       HighScore:"+highScore);
         timerPanel.setPreferredSize(new Dimension(10,40));
         timerPanel.add(timerLabel);
         add(timerPanel, BorderLayout.SOUTH);
@@ -91,6 +98,8 @@ public class ReactionTimeGame extends JFrame {
     //This method is called one time when the game starts.
 
     public void startGame() {
+    	
+    	
         //Starts counting the valid hits.
     	
     	dotCount = 0;
@@ -109,7 +118,13 @@ public class ReactionTimeGame extends JFrame {
         
     	//Disables the start button since it has already been pressed.
     	
-    	startButton.setEnabled(false); // Disable the start button once the game has started
+    	startButton.setEnabled(false); // Disable the start button once the game has started.
+    	
+    	//Set the game status to true
+    	gameStarted=true;
+    	
+    	//Call the mouse listener to enable it.
+    	MouseListener();
     }
     
     
@@ -117,9 +132,11 @@ public class ReactionTimeGame extends JFrame {
     
     private class DotPanel extends JPanel {
         
-    	//Instance of the random class,used for generating random numbers.
+    	private static final long serialVersionUID = 1L;
     	
-    	private Random random;
+    	//Instance of the random class,used for generating random numbers.		
+
+		private Random random;
         
     	//Integer for the dotSize.
     	
@@ -153,7 +170,7 @@ public class ReactionTimeGame extends JFrame {
                 }
             });
             
-            //Setting up the background image with the grey and white boxes.
+            //Setting up the background image with the black squares.
             
             try {
                 File imageFile = new File("C:\\Users\\nikol\\Desktop\\blacksquares.jpg");
@@ -220,6 +237,10 @@ public class ReactionTimeGame extends JFrame {
             dotPanel.showNextDot();
             playHitSound();
         }
+        if (dotCount>highScore) {
+        	highScore=dotCount;
+        	
+        }
     }
 
     //Updating the timer
@@ -230,19 +251,37 @@ public class ReactionTimeGame extends JFrame {
         long remainingTime = GAME_DURATION - elapsedTime;
 
         if (remainingTime >= 0) {
-            timerLabel.setText("Time Remaining: " + remainingTime + "s");
+            timerLabel.setText("Time Remaining: " + remainingTime + "s"+ "                       HighScore:"+highScore);
         } else {
             timer.stop();
             JOptionPane.showMessageDialog(this, "Game Over!\nDots hit: " + dotCount);
+            
+            //Remove the mouse listener.
+            
             dotPanel.removeMouseListener(dotPanel.getMouseListeners()[0]);
-            startButton.setEnabled(true); // Enable the start button
+            
+            //Variable for the mouseListener.
+            gameStarted=false;
+            
+            //Call MouseListener
+            MouseListener();
+            
+            // Enable the start button
+            startButton.setEnabled(true); 
+            
+            
         }
     }
     
     private void playHitSound() {
         if (hitSound != null) {
-            hitSound.setFramePosition(0);  // Rewind the sound to the beginning
-            hitSound.start();  // Play the sound
+        	// Rewind the sound to the beginning
+        	
+            hitSound.setFramePosition(0);  
+            
+            // Play the sound
+            
+            hitSound.start();  
         }
     }
 
@@ -260,7 +299,7 @@ public class ReactionTimeGame extends JFrame {
             this.visible = false;
             
             try {
-                File imageFile = new File("C:\\Users\\nikol\\Desktop\\targetimage.png"); // Replace with the actual path to your image file
+                File imageFile = new File("C:\\Users\\nikol\\Desktop\\targetimage.png"); 
                 image = ImageIO.read(imageFile);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -285,10 +324,30 @@ public class ReactionTimeGame extends JFrame {
         public void setVisible(boolean visible) {
             this.visible = visible;
         }
-
+        
+        //Method to check if the click on the X and Y coordinates,match the coordinates of the dot that appeared.
         public boolean isHit(int clickX, int clickY) {
+        	
+        	//Get the size of the dot.
             int dotSize = dotPanel.getDotSize();
+            
+            //Return true,if the clicks on X and Y are within the coordination limits.Then the hit counts.Otherwise it does not count.
             return clickX >= x && clickX <= x + dotSize && clickY >= y && clickY <= y + dotSize;
+        }
+    }
+    
+    //Checks whether the game started or not,so it enables or disabled the mouse on the dotPanel.
+    private void MouseListener() {
+        if (gameStarted) {
+            dotPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    hitDot(e);
+                }
+            });
+        }
+        else {
+        	dotPanel.removeMouseListener(dotPanel.getMouseListeners()[0]);
         }
     }
 }
