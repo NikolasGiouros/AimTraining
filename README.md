@@ -11,7 +11,6 @@ The Reaction Time Game is a simple game where you test and improve your reflexes
 4. Each successful hit will increase your score.
 5. The game will continue for a set duration (default: 30 seconds).
 6. After the time is up, a dialog box will appear showing your score.
-7. Click "OK" to close the game.
 
 ## Features
 
